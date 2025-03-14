@@ -3115,7 +3115,8 @@
                             }
                           },
                           "variables": {
-                            "searchIdentityProvider": "[if(equals(parameters('sku').name, 'free'), null(), createObject('type', 'SystemAssigned'))]"
+                            "searchIdentityProvider": "[if(equals(parameters('sku').name, 'free'), null(), createObject('type', 'SystemAssigned'))]",
+                            "baseUrl": "https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/main/"
                           },
                           "resources": [
                             {

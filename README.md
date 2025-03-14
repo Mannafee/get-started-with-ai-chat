@@ -31,7 +31,7 @@ If you do not have an Azure Subscription, you can sign up for a [free Azure acco
 To deploy this Azure environment successfully, your Azure account (the account you authenticate with) must have the following permissions and prerequisites on the targeted Azure Subscription:
 
 - **Microsoft.Authorization/roleAssignments/write** permissions at the subscription scope.  
-  _(typically included if you have [Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview), [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator), or [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner) role_
+  _(typically included if you have [Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview), [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator), or [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner) role)_
 - **Microsoft.Resources/deployments/write** permissions at the subscription scope.
 
 You can view the permissions for your account and subscription by going to Azure portal, clicking 'Subscriptions' under 'Navigation' and then choosing your subscription from the list. If you try to search for your subscription and it does not come up, make sure no filters are selected. After selecting your subscription, select 'Access control (IAM)' and you can see the roles that are assigned to your account for this subscription. If you want to see more information about the roles, you can go to the 'Role assignments' tab and search by your account name and then click the role you want to view more information about.
@@ -85,8 +85,26 @@ To enable message contents to be included in the traces, set the following envir
 ENV AZURE_TRACING_GEN_AI_CONTENT_RECORDING_ENABLED=true
 ```
 
-#### Quota Recommendations (Optional)
+#### Configurable Deployment Settings
+When you start a deployment, most parameters will have default values. You can change the following default settings: 
+<!-- TODO update this -->
 
+| **Setting** | **Description** |  **Default value** |
+|------------|----------------|  ------------|
+| **Azure Region** | The region where resources will be created. | East US| 
+| **Environment Name** | A **3-20 character alphanumeric value** used to generate a unique ID to prefix the resources. |  kmtemplate |
+| **Azure AI Content Understanding Location** | Select from a drop-down list of values. |  Sweden Central |
+| **Secondary Location** | A **less busy** region for **Azure SQL and Azure Cosmos DB**, useful in case of availability constraints. |  eastus2 |
+| **Deployment Type** | Select from a drop-down list. |  GlobalStandard |
+| **GPT Model** | Choose from **gpt-4, gpt-4o, gpt-4o-mini** | gpt-4o-mini |  
+| **GPT Model Deployment Capacity** | Configure capacity for **GPT models**. | 30k |
+| **Embedding Model** | Default: **text-embedding-ada-002**. |  text-embedding-ada-002 |
+| **Embedding Model Capacity** | Set the capacity for **embedding models**. |  80k |
+
+For a detailed description of customizable fields and instructions, view the [deployment customization guide](docs/deploy_customization.md).
+
+#### Quota Recommendations (Optional)
+<!-- TODO MAKE SURE this says something about checking that quota is availble == this might be fine -->
 The default for the model capacity in deployment is 30k tokens. For optimal performance, it is recommended to increase to 100k tokens. You can change the capacity by following the steps in [setting capacity and deployment SKU](docs/deploy_customization.md#customizing-model-deployments).
 
 * Navigate to the [Azure AI Foundry Portal](https://ai.azure.com/)
