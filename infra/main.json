@@ -3116,7 +3116,7 @@
                           },
                           "variables": {
                             "searchIdentityProvider": "[if(equals(parameters('sku').name, 'free'), null(), createObject('type', 'SystemAssigned'))]",
-                            "baseUrl": "https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/main/"
+                            "baseUrl": "https://raw.githubusercontent.com/Azure-Samples/get-started-with-ai-chat/main/"
                           },
                           "resources": [
                             {

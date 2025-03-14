@@ -20,7 +20,6 @@ This solution creates an Azure AI Foundry hub, project and connected resources i
 |---|---|---|
         
         
-
 ## Getting Started
 
 ### Prerequisites
@@ -87,19 +86,15 @@ ENV AZURE_TRACING_GEN_AI_CONTENT_RECORDING_ENABLED=true
 
 #### Configurable Deployment Settings
 When you start a deployment, most parameters will have default values. You can change the following default settings: 
-<!-- TODO update this -->
 
 | **Setting** | **Description** |  **Default value** |
 |------------|----------------|  ------------|
-| **Azure Region** | The region where resources will be created. | East US| 
-| **Environment Name** | A **3-20 character alphanumeric value** used to generate a unique ID to prefix the resources. |  kmtemplate |
-| **Azure AI Content Understanding Location** | Select from a drop-down list of values. |  Sweden Central |
-| **Secondary Location** | A **less busy** region for **Azure SQL and Azure Cosmos DB**, useful in case of availability constraints. |  eastus2 |
-| **Deployment Type** | Select from a drop-down list. |  GlobalStandard |
-| **GPT Model** | Choose from **gpt-4, gpt-4o, gpt-4o-mini** | gpt-4o-mini |  
-| **GPT Model Deployment Capacity** | Configure capacity for **GPT models**. | 30k |
-| **Embedding Model** | Default: **text-embedding-ada-002**. |  text-embedding-ada-002 |
-| **Embedding Model Capacity** | Set the capacity for **embedding models**. |  80k |
+| **Azure Region** | Select a region with quota which supports your selected model. |   |
+| **Model** | Choose from the [list of models supported by Azure AI Agent Service](https://learn.microsoft.com/azure/ai-services/agents/concepts/model-region-support) for your selected region | gpt-4o-mini |  
+| **Model Format** | Choose from OpenAI or Microsoft, depending on your model | OpenAI |  
+| **Model Deployment Capacity** | Configure capacity for your model. Recommended value is 100k. | 30k |
+| **Embedding Model** | Choose from text-embedding-3-large, text-embedding-3-small, and text-embedding-ada-002. |  text-embedding-3-small |
+| **Embedding Model Capacity** | Configure capacity for your embedding model. |  30k |
 
 For a detailed description of customizable fields and instructions, view the [deployment customization guide](docs/deploy_customization.md).
 
@@ -260,8 +255,9 @@ Once you've opened the project in [Codespaces](#github-codespaces) or in [Dev Co
 
 4. You will be prompted to provide an `azd` environment name (like "azureaiapp"), select a subscription from your Azure account, and select a location which has quota for all the resources. Then, it will provision the resources in your account and deploy the latest code. 
 
+    * For guidance on selecting a region with quota and model availability, follow the instructions in the [quota recommendations](#quota-recommendations-optional) section and ensure that your model is available in your selected region by checking the [list of models supported by Azure AI Agent Service](https://learn.microsoft.com/azure/ai-services/agents/concepts/model-region-support)
     * This deployment will take 8-12 minutes to provision the resources in your account and set up the solution with sample data.
-    * If you get an error or timeout with deployment, changing the location can help, as there may be availability constraints for the resources.
+    * If you get an error or timeout with deployment, changing the location can help, as there may be availability constraints for the resources. You can do this by running `azd down` and deleting the `.azure` folder from your code, and then running `azd up` again and selecting a new region.
 
     **NOTE!** If you get authorization failed and/or permission related errors during the deployment, please refer to the Azure account requirements in the [Prerequisites](#prerequisites) section. If you were recently granted these permissions, it may take a few minutes for the authorization to apply.
 
