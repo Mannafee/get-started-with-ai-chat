@@ -214,7 +214,7 @@
       "metadata": {
         "description": "Capacity of the chat deployment"
       },
-      "defaultValue": "30"
+      "defaultValue": 30
     },
     "embedModelFormat": {
       "type": "string",
@@ -267,7 +267,7 @@
       "metadata": {
         "description": "Capacity of the embedding deployment"
       },
-      "defaultValue": "30"
+      "defaultValue": 30
     },
     "useContainerRegistry": {
       "type": "bool",
