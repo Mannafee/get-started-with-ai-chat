@@ -18,7 +18,9 @@ This solution creates an Azure AI Foundry hub, project and connected resources i
 
 | [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/Azure-Samples/get-started-with-ai-chat) | [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/Azure-Samples/get-started-with-ai-chat) | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fget-started-with-ai-chat%2Fsophia%2Fupdate-readme%2Finfra%2Fmain.json) |
 |---|---|---|
-        
+
+
+Github Codespaces and Dev Containers both allow you to download and deploy the code for development. Deploy to Azure will create the resources for later deployment. Detailed instructions for options to deploy this solution can be found in [deployment](#deployment).        
         
 ## Getting Started
 
@@ -161,17 +163,6 @@ A related option is VS Code Dev Containers, which will open the project in your 
 1. Confirm that you have the required tools installed from the [prerequisites](#prerequisites) section and the code downloaded from the [code](#code) section
 2.  Open the project folder in your terminal or editor
 3. Continue with the [deploying steps](#deploying-steps)
-</details>
-
-<details>
-  <summary><b>Azure Template</b></summary>
-
-#### Azure Bicep/ARM Template
-
-1. Click on the following deployment button to create the required resources for this solution directly into your Azure Subscription.
-
-    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fget-started-with-ai-chat%2Fsophia%2Fupdate-readme%2Finfra%2Fmain.json)
-
 </details>
 
 <details>
