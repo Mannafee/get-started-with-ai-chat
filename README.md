@@ -146,6 +146,17 @@ A related option is VS Code Dev Containers, which will open the project in your 
 </details>
 
 <details>
+  <summary><b>Azure Template</b></summary>
+
+#### Azure Bicep/ARM Template
+
+1. Click on the following deployment button to create the required resources for this solution directly into your Azure Subscription.
+
+    [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fget-started-with-ai-chat%2Fsophia%2Fupdate-readme%2Finfra%2Fmain.json)
+
+</details>
+
+<details>
   <summary><b>Local Development Server</b></summary>
 
 #### Local Development Server
