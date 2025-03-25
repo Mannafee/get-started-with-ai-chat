@@ -285,7 +285,7 @@ Once you've opened the project in [Codespaces](#github-codespaces) or in [Dev Co
     ```
     Check for any errors during the deployment, since updated app code will not get deployed if errors occur.
 
-8. (Optional) You can optionally use a local development server to test app changes locally. To do so, follow the steps in [local deployment server](#local-development-server) after your app is deployed.
+8. (Optional) You can use a local development server to test app changes locally. To do so, follow the steps in [local deployment server](#local-development-server) after your app is deployed.
 
 ## Resource Clean-up
 
