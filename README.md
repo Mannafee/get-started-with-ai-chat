@@ -8,7 +8,7 @@ This solution contains a simple chat application that is deployed to Azure Conta
 
 ## Features
 
-This solution creates an Azure AI Foundry hub, project and connected resources including Azure AI Services, AI Search and more. More details about the resources that are created are located in the [resources](#resources) documentation. There are options to enable Retrieval-Augmented Generation (RAG) and use logging, tracing, and monitoring. 
+This solution creates an Azure AI Foundry hub, project and connected resources including Azure AI Services, AI Search and more. More details about the resources can be found in the [resources](#resources) documentation. There are options to enable Retrieval-Augmented Generation (RAG) and use logging, tracing, and monitoring. 
 
 #### Architecture diagram
 
@@ -62,9 +62,9 @@ git clone https://github.com/Azure-Samples/get-started-with-ai-chat.git
 At this point you could make changes to the code if required. However, no changes are needed to deploy and test the app as shown in the next step.
 
 #### Logging
-If you want to enable logging to a file, navigate to `src/Dockerfile` and edit the code to uncomment the following line:
+To enable logging to a file, navigate to `src/Dockerfile` and edit the code to uncomment the following line:
 
- ```
+ ```code
  # ENV APP_LOG_FILE=app.log
  ```
 
@@ -285,7 +285,7 @@ Once you've opened the project in [Codespaces](#github-codespaces) or in [Dev Co
     ```
     Check for any errors during the deployment, since updated app code will not get deployed if errors occur.
 
-8. (Optional) You can optionally use a local development server to test app changes locally. To do so, follow the steps in [local deployment server](#local-development-server) after your app is deployed.
+8. (Optional) You can use a local development server to test app changes locally. To do so, follow the steps in [local deployment server](#local-development-server) after your app is deployed.
 
 ## Resource Clean-up
 
