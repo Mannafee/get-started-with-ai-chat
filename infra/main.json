@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "1689033307923584467"
+      "templateHash": "5825954179166107303"
     }
   },
   "parameters": {
@@ -19,33 +19,13 @@
     },
     "location": {
       "type": "string",
-      "allowedValues": [
-        "australiaeast",
-        "brazilsouth",
-        "canadaeast",
-        "eastus",
-        "eastus2",
-        "francecentral",
-        "germanywestcentral",
-        "japaneast",
-        "koreacentral",
-        "northcentralus",
-        "norwayeast",
-        "polandcentral",
-        "spaincentral",
-        "southafricanorth",
-        "southcentralus",
-        "southindia",
-        "swedencentral",
-        "switzerlandnorth",
-        "uksouth",
-        "westeurope",
-        "westus",
-        "westus3"
-      ],
       "metadata": {
         "azd": {
-          "type": "location"
+          "type": "location",
+          "usageName": [
+            "OpenAI.GlobalStandard.gpt-4o-mini,30",
+            "OpenAI.GlobalStandard.text-embedding-3-small,30"
+          ]
         },
         "description": "Location for all resources"
       },
