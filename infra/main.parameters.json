@@ -11,9 +11,6 @@
     "principalId": {
       "value": "${AZURE_PRINCIPAL_ID}"
     },
-    "resourceGroupName": {
-      "value": "${AZURE_RESOURCE_GROUP}"
-    },
     "aiHubName": {
       "value": "${AZURE_AIHUB_NAME}"
     },

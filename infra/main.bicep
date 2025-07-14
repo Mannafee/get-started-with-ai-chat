@@ -1,4 +1,4 @@
-targetScope = 'subscription'
+targetScope = 'resourceGroup'
 
 @minLength(1)
 @maxLength(64)
@@ -20,8 +20,6 @@ param location string
 
 @description('Use this parameter to use an existing AI project resource ID')
 param azureExistingAIProjectResourceId string = ''
-@description('The Azure resource group where new resources will be deployed')
-param resourceGroupName string = ''
 @description('The Azure AI Foundry Hub resource name. If ommited will be generated')
 param aiProjectName string = ''
 @description('The application insights resource name. If ommited will be generated')
@@ -77,7 +75,7 @@ param embeddingDeploymentDimensions string = '100'
 // See version availability in this table:
 // https://learn.microsoft.com/azure/ai-services/openai/concepts/models#embeddings-models
 @secure()
-param embedModelVersion string = '1'
+param embedModelVersion string = ''
 
 @description('Sku of the embeddings model deployment')
 param embedDeploymentSku string = 'Standard'
@@ -141,13 +139,6 @@ var aiDeployments = concat(
   aiChatModel,
   useSearchService ? aiEmbeddingModel : [])
 
-// Organize resources in a resource group
-resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: !empty(resourceGroupName) ? resourceGroupName : '${abbrs.resourcesResourceGroups}${environmentName}'
-  location: location
-  tags: tags
-}
-
 var logAnalyticsWorkspaceResolvedName = !useApplicationInsights
   ? ''
   : !empty(logAnalyticsWorkspaceName)
@@ -161,7 +152,6 @@ var resolvedSearchServiceName = !useSearchService
 
 module ai 'core/host/ai-environment.bicep' = if (empty(azureExistingAIProjectResourceId)) {
   name: 'ai'
-  scope: rg
   params: {
     location: location
     tags: tags
@@ -184,12 +174,11 @@ module ai 'core/host/ai-environment.bicep' = if (empty(azureExistingAIProjectRes
 
 var searchServiceEndpoint = !useSearchService
   ? ''
-  : ai.outputs.searchServiceEndpoint
+  : ai!.outputs.searchServiceEndpoint
 
 // If bringing an existing AI project, set up the log analytics workspace here
 module logAnalytics 'core/monitor/loganalytics.bicep' = if (!empty(azureExistingAIProjectResourceId)) {
   name: 'logAnalytics'
-  scope: rg
   params: {
     location: location
     tags: tags
@@ -200,11 +189,11 @@ var existingProjEndpoint = !empty(azureExistingAIProjectResourceId) ? format('ht
 
 var projectResourceId = !empty(azureExistingAIProjectResourceId)
   ? azureExistingAIProjectResourceId
-  : ai.outputs.projectResourceId
+  : ai!.outputs.projectResourceId
 
 var projectEndpoint = !empty(azureExistingAIProjectResourceId)
   ? existingProjEndpoint
-  : ai.outputs.aiProjectEndpoint
+  : ai!.outputs.aiProjectEndpoint
 
 
 var resolvedApplicationInsightsName = !useApplicationInsights || !empty(azureExistingAIProjectResourceId)
@@ -213,7 +202,6 @@ var resolvedApplicationInsightsName = !useApplicationInsights || !empty(azureExi
 
 module monitoringMetricsContribuitorRoleAzureAIDeveloperRG 'core/security/appinsights-access.bicep' = if (!empty(resolvedApplicationInsightsName)) {
   name: 'monitoringmetricscontributor-role-azureai-developer-rg'
-  scope: rg
   params: {
     principalType: 'ServicePrincipal'
     appInsightsName: resolvedApplicationInsightsName
@@ -221,40 +209,24 @@ module monitoringMetricsContribuitorRoleAzureAIDeveloperRG 'core/security/appins
   }
 }
 
-resource existingProjectRG 'Microsoft.Resources/resourceGroups@2021-04-01' existing = if (!empty(azureExistingAIProjectResourceId) && contains(azureExistingAIProjectResourceId, '/')) {
-  name: split(azureExistingAIProjectResourceId, '/')[4]
-}
-
-module userRoleAzureAIDeveloperBackendExistingProjectRG 'core/security/role.bicep' = if (!empty(azureExistingAIProjectResourceId)) {
-  name: 'backend-role-azureai-developer-existing-project-rg'
-  scope: existingProjectRG
-  params: {
-    principalType: 'ServicePrincipal'
-    principalId: api.outputs.SERVICE_API_IDENTITY_PRINCIPAL_ID
-    roleDefinitionId: '64702f94-c441-49e6-a78b-ef80e0188fee' 
-  }
-}
-
 //Container apps host and api
 // Container apps host (including container registry)
 module containerApps 'core/host/container-apps.bicep' = {
   name: 'container-apps'
-  scope: rg
   params: {
     name: 'app'
     location: location
     tags: tags
     containerAppsEnvironmentName: 'containerapps-env-${resourceToken}'
     logAnalyticsWorkspaceName: empty(azureExistingAIProjectResourceId)
-      ? ai.outputs.logAnalyticsWorkspaceName
-      : logAnalytics.outputs.name
+      ? ai!.outputs.logAnalyticsWorkspaceName
+      : logAnalytics!.outputs.name
   }
 }
 
 // API app
 module api 'api.bicep' = {
   name: 'api'
-  scope: rg
   params: {
     name: 'ca-api-${resourceToken}'
     location: location
@@ -278,7 +250,6 @@ module api 'api.bicep' = {
 
 module userRoleAzureAIDeveloper 'core/security/role.bicep' = {
   name: 'user-role-azureai-developer'
-  scope: rg
   params: {
     principalType: runnerPrincipalType
     principalId: principalId
@@ -288,7 +259,6 @@ module userRoleAzureAIDeveloper 'core/security/role.bicep' = {
 
 module userCognitiveServicesUser  'core/security/role.bicep' = if (empty(azureExistingAIProjectResourceId)) {
   name: 'user-role-cognitive-services-user'
-  scope: rg
   params: {
     principalType: runnerPrincipalType
     principalId: principalId
@@ -298,7 +268,6 @@ module userCognitiveServicesUser  'core/security/role.bicep' = if (empty(azureEx
 
 module userAzureAIUser  'core/security/role.bicep' = if (empty(azureExistingAIProjectResourceId)) {
   name: 'user-role-azure-ai-user'
-  scope: rg
   params: {
     principalType: runnerPrincipalType
     principalId: principalId
@@ -308,7 +277,6 @@ module userAzureAIUser  'core/security/role.bicep' = if (empty(azureExistingAIPr
 
 module backendCognitiveServicesUser  'core/security/role.bicep' = if (empty(azureExistingAIProjectResourceId)) {
   name: 'backend-role-cognitive-services-user'
-  scope: rg
   params: {
     principalType: 'ServicePrincipal'
     principalId: api.outputs.SERVICE_API_IDENTITY_PRINCIPAL_ID
@@ -316,20 +284,11 @@ module backendCognitiveServicesUser  'core/security/role.bicep' = if (empty(azur
   }
 }
 
-module backendCognitiveServicesUser2  'core/security/role.bicep' = if (!empty(azureExistingAIProjectResourceId)) {
-  name: 'backend-role-cognitive-services-user2'
-  scope: existingProjectRG
-  params: {
-    principalType: 'ServicePrincipal'
-    principalId: api.outputs.SERVICE_API_IDENTITY_PRINCIPAL_ID
-    roleDefinitionId: 'a97b65f3-24c7-4388-baec-2e87135dc908'
-  }
-}
-
+// Note: For existing AI projects in other resource groups, you'll need to manually assign roles
+// or use a separate deployment targeting that resource group
 
 module backendRoleSearchIndexDataContributorRG 'core/security/role.bicep' = if (useSearchService) {
   name: 'backend-role-azure-index-data-contributor-rg'
-  scope: rg
   params: {
     principalType: 'ServicePrincipal'
     principalId: api.outputs.SERVICE_API_IDENTITY_PRINCIPAL_ID
@@ -339,7 +298,6 @@ module backendRoleSearchIndexDataContributorRG 'core/security/role.bicep' = if (
 
 module backendRoleSearchIndexDataReaderRG 'core/security/role.bicep' = if (useSearchService) {
   name: 'backend-role-azure-index-data-reader-rg'
-  scope: rg
   params: {
     principalType: 'ServicePrincipal'
     principalId: api.outputs.SERVICE_API_IDENTITY_PRINCIPAL_ID
@@ -349,7 +307,6 @@ module backendRoleSearchIndexDataReaderRG 'core/security/role.bicep' = if (useSe
 
 module backendRoleSearchServiceContributorRG 'core/security/role.bicep' = if (useSearchService) {
   name: 'backend-role-azure-search-service-contributor-rg'
-  scope: rg
   params: {
     principalType: 'ServicePrincipal'
     principalId: api.outputs.SERVICE_API_IDENTITY_PRINCIPAL_ID
@@ -359,7 +316,6 @@ module backendRoleSearchServiceContributorRG 'core/security/role.bicep' = if (us
 
 module userRoleSearchIndexDataContributorRG 'core/security/role.bicep' = if (useSearchService) {
   name: 'user-role-azure-index-data-contributor-rg'
-  scope: rg
   params: {
     principalType: runnerPrincipalType
     principalId: principalId
@@ -369,7 +325,6 @@ module userRoleSearchIndexDataContributorRG 'core/security/role.bicep' = if (use
 
 module userRoleSearchIndexDataReaderRG 'core/security/role.bicep' = if (useSearchService) {
   name: 'user-role-azure-index-data-reader-rg'
-  scope: rg
   params: {
     principalType: runnerPrincipalType
     principalId: principalId
@@ -379,7 +334,6 @@ module userRoleSearchIndexDataReaderRG 'core/security/role.bicep' = if (useSearc
 
 module userRoleSearchServiceContributorRG 'core/security/role.bicep' = if (useSearchService) {
   name: 'user-role-azure-search-service-contributor-rg'
-  scope: rg
   params: {
     principalType: runnerPrincipalType
     principalId: principalId
@@ -389,7 +343,6 @@ module userRoleSearchServiceContributorRG 'core/security/role.bicep' = if (useSe
 
 module backendRoleAzureAIDeveloperRG 'core/security/role.bicep' = {
   name: 'backend-role-azureai-developer-rg'
-  scope: rg
   params: {
     principalType: 'ServicePrincipal'
     principalId: api.outputs.SERVICE_API_IDENTITY_PRINCIPAL_ID
@@ -397,7 +350,7 @@ module backendRoleAzureAIDeveloperRG 'core/security/role.bicep' = {
   }
 }
 
-output AZURE_RESOURCE_GROUP string = rg.name
+output AZURE_RESOURCE_GROUP string = resourceGroup().name
 
 // Outputs required for local development server
 output AZURE_TENANT_ID string = tenant().tenantId

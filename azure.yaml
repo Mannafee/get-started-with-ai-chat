@@ -4,6 +4,11 @@ name: azd-get-started-with-ai-chat
 metadata:
   template: azd-get-started-with-ai-chat@1.0.0
 
+infra:
+  provider: bicep
+  path: infra
+  module: main
+  
 hooks:
   preup:
     posix:
